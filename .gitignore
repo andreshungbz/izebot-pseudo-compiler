@@ -27,7 +27,7 @@ replay_pid*
 /.settings/
 /bin/
 /build/
-/.xtend-gen/
+/xtend-gen/
 *.log
 .DS_Store
 Thumbs.db
