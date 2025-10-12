@@ -21,7 +21,7 @@ class Print {
 	
 	// displays BNF grammar in a nice format
 	def static void bnf() {
-		println("\nBNF Grammar]")
+		println("\n[BNF Grammar]")
         for (i : 0 ..< grammar.size / 3) {
         	val left = String.format("%-12s", grammar.get(i * 3))
             val arrow = grammar.get(i * 3 + 1)
