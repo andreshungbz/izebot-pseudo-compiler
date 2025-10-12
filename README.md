@@ -1,2 +1,3 @@
 # izebot-pseudo-compiler
-A meta-language pseudo-compiler written in Xtend.
+
+Program 2. A meta-language pseudo-compiler written in Xtend.
