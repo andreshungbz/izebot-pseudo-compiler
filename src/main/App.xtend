@@ -1,4 +1,4 @@
-// main driver program
+// App.xtend is the main driver program
 package main
 
 import analysis.Lexer
@@ -17,13 +17,15 @@ class App {
 			// prompt for string input, exiting on "QUIT"
 			print("\nEnter input (or QUIT to exit): ")
 			val input = scanner.nextLine().trim // trim whitespace for initial input
+			
 			if (input.equals("QUIT")) {
 				running = false
+			} else {
+				// lexical analysis and testing
+				val lexer = new Lexer(input)
+				val tokens = lexer.scanTokens()
+				Print.tokens(tokens)
 			}
-			
-			// lexical analysis
-			val lexer = new Lexer(input)
-			lexer.scanTokens()
 		}
 		
 		println("Exiting program...")
