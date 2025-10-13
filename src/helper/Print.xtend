@@ -31,6 +31,6 @@ class Print {
 	}
 	
 	def static void helloworld() {
-		println("Hello Xtend!")
+		println("Hello Xtend!working")
 	}
 }
