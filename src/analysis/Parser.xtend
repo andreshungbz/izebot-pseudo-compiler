@@ -25,7 +25,10 @@ class Parser {
             rootNode = parseProgram()
             return rootNode
         } catch (ParseError e) {
-            throw e
+        	val RED = "\u001B[31m"
+    		val RESET = "\u001B[0m"
+            println(RED + "Parse error: " + e.message + RESET + '\n')
+            return null
         }
     }
     
