@@ -14,6 +14,27 @@ class ParseNode {
         children.add(child)
     }
 
+    def List<ParseNode> getChildren() {
+        children
+    }
+
+    // Concrete method, not abstract
+    def void printDerivations(int indent) {
+        println("  ".repeat(indent) + label)
+        for (child : children) {
+            child.printDerivations(indent + 1)
+        }
+    }
+
+    def List<ParseNode> collectDerivationSteps() {
+        val steps = newArrayList
+        steps.add(this)
+        for (child : children) {
+            steps.addAll(child.collectDerivationSteps)
+        }
+        steps
+    }
+
     override toString() {
         label
     }

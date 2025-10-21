@@ -2,6 +2,7 @@
 package main
 
 import analysis.Lexer
+import analysis.Parser
 import helper.Print
 import java.util.Scanner
 
@@ -17,17 +18,32 @@ class App {
 			// prompt for string input, exiting on "QUIT"
 			print("\nEnter input (or QUIT to exit): ")
 			val input = scanner.nextLine().trim // trim whitespace for initial input
-			
+			println(" ") // whitespace for better readability 
 			if (input.equals("QUIT")) {
 				running = false
 			} else {
 				// lexical analysis and testing
 				val lexer = new Lexer(input)
 				val tokens = lexer.scanTokens()
-				Print.tokens(tokens)
+			
+				val parser = new Parser(tokens)
+				val parsedTokens = parser.parse()
+				
+				if (parsedTokens !== null){
+					Print.printGrammarDerivations(parsedTokens)
+					println("Press ENTER to continue...")
+					scanner.nextLine()				
+					Print.printParseTree(parsedTokens)
+				}
+				
+				println("Press ENTER to continue...")
+				scanner.nextLine()
+				
 			}
 		}
 		
 		println("Exiting program...")
 	}
+	
+	
 }
