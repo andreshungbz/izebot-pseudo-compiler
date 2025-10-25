@@ -15,7 +15,7 @@ Setting up Eclipse IDE with Xtend and getting the project up and running is more
 
 ### Docker
 
-The `Dockerfile` provided will retrieve the following archives from the latest release or pre-release on this repository:
+The provided `Dockerfile` will retrieve the following archives from the latest release or pre-release on this repository:
 
 - `izebot-pseudo-compiler.zip` (contains the binary Java class files from Xtend compilation)
 - `runtime.zip` (contains the Xtend runtime dependencies)
