@@ -8,12 +8,26 @@ import java.util.ArrayList
 import helper.PrintHelper
 
 class Print {
+	/// BNF grammar
+	static val grammar = # [
+        "<program>", "→", "EXEC <statement> HALT",
+        "<statement>", "→", "<assignment> > | <assignment> > <statement>",
+        "<assignment>", "→", "<key> = <m>",
+        "<key>", "→", "key <k>",
+        "<m>", "→", "DRVF | DRVB | TRNL | TRNR | SPNL | SPNR",
+        "<k>", "→", "A | B | C | D"
+    ]
+	
 	/// introduction displays program information
 	def static void introduction() {
-		println("[izebot-psuedo-compiler] Meta-language pseudo-compiler written in Xtend for the Robo-Stamp 2P (iZEBOT)")
-		println("[GitHub] https://github.com/andreshungbz/izebot-pseudo-compiler")
+		val PURPLE = "\u001B[95m"
+    	val RESET = "\u001B[0m"
+    	
+		println(String.format("%-25s %s", PURPLE + "[izebot-psuedo-compiler]" + RESET,
+				"Meta-language pseudo-compiler written in Xtend for the Robo-Stamp 2P (iZEBOT)"))
+		println(String.format("%-33s %s", PURPLE + "[GitHub]" + RESET,
+				"https://github.com/andreshungbz/izebot-pseudo-compiler"))
 	}
-	
 	
 	/// bnf displays BNF grammar in a nice format
 	def static void bnf() {
@@ -112,16 +126,5 @@ class Print {
 	
 	    println() // extra space
 	}
-
-	/// BNF grammar
-	static val grammar = # [
-        "<program>", "→", "EXEC <statement> HALT",
-        "<statement>", "→", "<assignment> > | <assignment> > <statement>",
-        "<assignment>", "→", "<key> = <m>",
-        "<key>", "→", "key <k>",
-        "<m>", "→", "DRVF | DRVB | TRNL | TRNR | SPNL | SPNR",
-        "<k>", "→", "A | B | C | D"
-    ]
-    
 }
     
