@@ -2,7 +2,9 @@
 
 Program 2. A meta-language pseudo-compiler written in Xtend.
 
-## Running the Program in Eclipse IDE
+## Running the Program
+
+### Eclipse IDE
 
 Setting up Eclipse IDE with Xtend and getting the project up and running is more cumbersome, but the general steps are outlined below:
 
@@ -11,7 +13,7 @@ Setting up Eclipse IDE with Xtend and getting the project up and running is more
 3. Add the `Java` and `Xtend` natures to the project.
 4. Set up a run configuration to execute `src/main/App.xtend` as a Java application.
 
-## Running the Program with Docker
+### Docker
 
 The `Dockerfile` provided will retrieve the following archives from the latest release or pre-release on this repository:
 
