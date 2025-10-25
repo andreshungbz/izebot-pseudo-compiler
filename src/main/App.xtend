@@ -44,7 +44,7 @@ class App {
 					Print.grammarDerivations(parseTree)
 					
 					// print parse tree
-					print(BLUE + "\n[Press ENTER to view PARSE TREE]" + RESET)
+					println(BLUE + "\n[Press ENTER to view PARSE TREE]" + RESET)
 					scanner.nextLine()				
 					Print.parseTree(parseTree)
 					
