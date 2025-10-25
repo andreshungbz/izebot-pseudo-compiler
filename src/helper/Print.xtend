@@ -1,4 +1,5 @@
-// Print.xtend contains helpful print functions
+/// Print.xtend contains helpful print functions.
+/// It covers introduction, grammar, derivations, parse tree
 package helper
 
 import analysis.Token
@@ -31,7 +32,7 @@ class Print {
 	
 	/// bnf displays BNF grammar in a nice format
 	def static void bnf() {
-		println("\n[BNF Grammar]")
+		println("\n[BNF GRAMMAR]")
         for (i : 0 ..< grammar.size / 3) {
         	val left = String.format("%-12s", grammar.get(i * 3))
             val arrow = grammar.get(i * 3 + 1)
@@ -64,67 +65,55 @@ class Print {
    		}
     }
     
+    /// grammarDerivations displays each sentential form of the leftmost derivation given the parse tree
 	def static void grammarDerivations(ParseNode root) {
+		var steps = 1
+	    val derivations = new ArrayList<String>()
+	    val sententialForm = new ArrayList<String>()
+	    
+	    // convert children nodes to string
+	    for (child : root.getChildren)
+	        sententialForm.add(child.toString)
+	    
+	    derivations.add(sententialForm.join(' ')) // add to derivations list
 	
-	var steps = 1
-    val derivations = new ArrayList<String>()
-    // Start with top-level children as mutable list of strings
-    val sententialForm = new ArrayList<String>()
-    for (child : root.getChildren)
-        sententialForm.add(child.toString)
-    
-    // Call join as an extension method on the list itself
-    derivations.add(sententialForm.join(' '))
-
-    // Start recursive leftmost derivation
-    PrintHelper.derive(root, sententialForm, derivations)
-
-	println("=== Derivation Steps ===")
+	    // recursively add rest of derivations
+	    PrintHelper.derive(root, sententialForm, derivations)
 	
-	// First line: static <program> -> first expansion
-	if (!derivations.empty){
-	    println(steps + ". <program> -> " + derivations.get(0))
-	    steps++
-	   }
-	
-	for (i : 1 ..< derivations.size) {
-    	// Adjust indentation: 10 spaces if step < 10, 9 spaces if step >= 10
-    val indent = if (steps < 10) "          " else "         "
-    println(steps + ". " + indent + "-> " + derivations.get(i))
-    steps++
+		println("[LEFTMOST DERIVATION]")
+		
+		if (!derivations.empty){ // first derivation <program> →
+		    println(steps++ + ". <program> → " + derivations.get(0))
+		}
+		
+		for (i : 1 ..< derivations.size) {
+			// adjust indentation: 10 spaces if step < 10, 9 spaces if step >= 10
+		    val indent = if (steps < 10) "          " else "         "
+		    println(steps++ + ". " + indent + "→ " + derivations.get(i))
+		}
 	}
-
 	
-	println("========================")
-
-}
-	
-	 /**
-     * Print a parse tree in the terminal with vertical ASCII branches
-     */
+    /// parseTree displays a parse tree with vertical ASCII branches
 	def static void parseTree(ParseNode root) {
-	    println() // extra space
+	    println("[PARSE TREE]")
 	
 	    val rows = PrintHelper.calculateMatrixHeight(root)
 	    val cols = PrintHelper.calculateMatrixWidth(root)
-	
 	    val fixedCols = cols * 2
 	
-	    // Initialize matrix with spaces
+	    // initialize matrix with spaces
 	    val matrix = (0..rows-1).map[i |
 	        (0..fixedCols-1).map[j | ' '].toList
 	    ].toList
 	
-	    // Fill the matrix recursively, starting at center of calculated width
+	    // fill the matrix recursively, starting at center of calculated width
 	    val startCol = (cols - root.getLabel.length) / 2
 	    PrintHelper.fillNode(matrix, root, 0, startCol)
 	
-	    // Print the matrix
+	    // print the matrix
 	    for(i : 0 ..< rows) {
 	        println(matrix.get(i).join(''))
 	    }
-	
-	    println() // extra space
 	}
 }
     
