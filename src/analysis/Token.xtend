@@ -5,15 +5,9 @@ import java.util.Set
 
 /// TokenType enumerates the different categories in the BNF grammar
 enum TokenType {
-    // single-character punctuation
-    EQUAL, GREATER,
-
-    // keywords
-    EXEC, HALT, KEY,
-
-    // categories
-    MOVEMENT, KEYVALUE,
-
+    EQUAL, GREATER, // single-character punctuation
+    EXEC, HALT, KEY, // keywords
+    MOVEMENT, KEYVALUE, // categories
     INVALID // for strange tokens
 }
 
