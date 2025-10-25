@@ -14,8 +14,7 @@ enum TokenType {
     // categories
     MOVEMENT, KEYVALUE,
 
-    INVALID, // for strange tokens
-    EOF
+    INVALID // for strange tokens
 }
 
 /// Token contains the lexeme, its category, and string position

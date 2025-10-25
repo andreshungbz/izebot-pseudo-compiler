@@ -28,7 +28,6 @@ class Lexer {
 			scanToken()
 		}
 		
-		tokens.add(new Token(TokenType.EOF, "", current))
 		return tokens
 	}
 	
