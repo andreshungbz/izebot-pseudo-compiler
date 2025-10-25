@@ -1,10 +1,20 @@
+/// ParseNode.xtend defines the node used in the parse tree.
+/// It contains getters for its label and children and a method for adding a child node.
 package analysis
 
 import java.util.List
 
 class ParseNode {
+	// DATA MEMBERS
     val String label
     val List<ParseNode> children = newArrayList
+    
+    // CONSTRUCTOR
+    new(String label) {
+        this.label = label
+    }
+    
+    // PUBLIC METHODS
     
     def getLabel(){
     	return label
@@ -13,30 +23,9 @@ class ParseNode {
 	def List<ParseNode> getChildren() {
         children
     }
-	
-    new(String label) {
-        this.label = label
-    }
 
     def addChild(ParseNode child) {
         children.add(child)
-    }
-
-    // Concrete method, not abstract
-    def void printDerivations(int indent) {
-        println("  ".repeat(indent) + label)
-        for (child : children) {
-            child.printDerivations(indent + 1)
-        }
-    }
-
-    def List<ParseNode> collectDerivationSteps() {
-        val steps = newArrayList
-        steps.add(this)
-        for (child : children) {
-            steps.addAll(child.collectDerivationSteps)
-        }
-        steps
     }
 
     override toString() {
