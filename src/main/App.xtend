@@ -1,4 +1,5 @@
-// App.xtend is the main driver program
+/// App.xtend is the main driver program
+/// It continuously prompts the user for input and attempts to parse the program.
 package main
 
 import analysis.Lexer
@@ -9,49 +10,52 @@ import java.util.Scanner
 class App {
 	def static void main(String[] args) {
 		System.setProperty("file.encoding", "UTF-8");
+		val scanner = new Scanner(System.in)
+		var running = true
+		val GREEN = "\u001B[32m"
+		val BLUE = "\u001B[94m"
+    	val RESET = "\u001B[0m"
 		
 		Print.introduction()
 		
-		val scanner = new Scanner(System.in)
-		var running = true
-		while (running) {
+		while (running) { // main program loop
 			Print.bnf()
 			
-			// prompt for string input, exiting on "QUIT"
-			print("\nEnter input (or QUIT to exit): ")
-			val input = scanner.nextLine().trim // trim whitespace for initial input
-			println(" ") // whitespace for better readability 
-			if (input.equals("QUIT")) {
+			print(BLUE + "\nEnter Input (QUIT to exit): " + RESET)
+			val input = scanner.nextLine().trim // get input and remove whitespace
+			println()
+			
+			if (input.equals("QUIT")) { // exit program on "QUIT"
 				running = false
 			} else {
-				// lexical analysis and testing
+				// lexical analysis
 				val lexer = new Lexer(input)
 				val tokens = lexer.scanTokens()
 			
+				// syntax analysis
 				val parser = new Parser(tokens)
-				val parsedTokens = parser.parse()
+				val parseTree = parser.parse()
 				
-				// successful derivation
-				if (parsedTokens !== null){
-					// print derivations
-					println("[Derivation Success] Press ENTER to view derivations...")
+				if (parseTree !== null){ // on successful parsing
+					// print leftmost derivation
+					println(GREEN + "[Parsing Successful]" + RESET)
+					println(BLUE + "[Press ENTER to view LEFTMOST DERIVATION]" + RESET)
 					scanner.nextLine()	
-					Print.grammarDerivations(parsedTokens)
+					Print.grammarDerivations(parseTree)
 					
 					// print parse tree
-					println("Press ENTER to view parse tree...")
+					print(BLUE + "\n[Press ENTER to view PARSE TREE]" + RESET)
 					scanner.nextLine()				
-					Print.parseTree(parsedTokens)
+					Print.parseTree(parseTree)
+					
+					// TODO: print PBASIC intermediate program and write to IZEBOT.BSP
 				}
 				
-				println("Press ENTER to submit another input program...")
+				print(BLUE + "[Press ENTER to submit another input]" + RESET)
 				scanner.nextLine()
-				
 			}
 		}
 		
-		println("Exiting program...")
+		println(BLUE + "[PROGRAM EXIT]" + RESET)
 	}
-	
-	
 }
