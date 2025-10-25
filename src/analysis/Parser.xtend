@@ -2,10 +2,13 @@
 /// It creates the parse tree from which the derivations and tree are printed.
 package analysis
 
-import analysis.Token
+import components.ParseErrors
+import components.ParseNode
+import components.Token
+import components.TokenType
 import java.util.List
 
-import static analysis.ParseErrors.*
+import static components.ParseErrors.*
 
 class Parser {
     // DATA MEMBERS

@@ -1,6 +1,6 @@
 /// ParseNode.xtend defines the node used in the parse tree.
 /// It contains getters for its label and children and a method for adding a child node.
-package analysis
+package components
 
 import java.util.List
 

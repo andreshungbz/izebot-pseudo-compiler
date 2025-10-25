@@ -2,7 +2,9 @@
 /// It returns a list of Token to the parser.
 package analysis
 
-import analysis.TokenData
+import components.Token
+import components.TokenData
+import components.TokenType
 import java.util.ArrayList
 import java.util.List
 

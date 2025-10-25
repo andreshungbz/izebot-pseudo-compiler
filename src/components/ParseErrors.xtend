@@ -1,8 +1,8 @@
 /// ParseErrors.xtend defines the ParseErrors class
 /// It contains the error class and helper functions for reporting errors during syntax analysis.
-package analysis
+package components
 
-import analysis.Token
+import components.Token
 import java.util.List
 
 class ParseErrors {

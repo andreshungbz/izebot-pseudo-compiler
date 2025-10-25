@@ -1,5 +1,5 @@
 /// Token.xtend contains some useful definitions for the lexer.
-package analysis
+package components
 
 import java.util.Set
 

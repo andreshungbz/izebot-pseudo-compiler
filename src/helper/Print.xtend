@@ -2,8 +2,8 @@
 /// It covers introduction, grammar, derivations, parse tree
 package helper
 
-import analysis.Token
-import analysis.ParseNode
+import components.ParseNode
+import components.Token
 import helper.PrintHelper
 import java.util.List
 import java.util.ArrayList
@@ -57,7 +57,7 @@ class Print {
 	            token.position)
 	
 	        // color INVALID tokens
-	        if (token.type == analysis.TokenType.INVALID) {
+	        if (token.type == components.TokenType.INVALID) {
 	            println(RED + line + RESET)
 	        } else {
 	            println(line)

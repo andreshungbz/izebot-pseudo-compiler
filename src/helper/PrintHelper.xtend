@@ -2,7 +2,7 @@
 /// It covers recursion in Print.leftmostDerivation and Print.parseTree.
 package helper
 
-import analysis.ParseNode
+import components.ParseNode
 import java.util.List
 
 class PrintHelper {
