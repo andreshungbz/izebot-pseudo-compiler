@@ -41,7 +41,7 @@ class App {
 					println(GREEN + "[Parsing Successful]" + RESET)
 					println(BLUE + "[Press ENTER to view LEFTMOST DERIVATION]" + RESET)
 					scanner.nextLine()	
-					Print.grammarDerivations(parseTree)
+					Print.leftmostDerivation(parseTree)
 					
 					// print parse tree
 					println(BLUE + "\n[Press ENTER to view PARSE TREE]" + RESET)

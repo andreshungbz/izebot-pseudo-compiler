@@ -4,9 +4,9 @@ package helper
 
 import analysis.Token
 import analysis.ParseNode
+import helper.PrintHelper
 import java.util.List
 import java.util.ArrayList
-import helper.PrintHelper
 
 class Print {
 	/// BNF grammar
@@ -65,8 +65,8 @@ class Print {
    		}
     }
     
-    /// grammarDerivations displays each sentential form of the leftmost derivation given the parse tree
-	def static void grammarDerivations(ParseNode root) {
+    /// leftmostDerivation displays each sentential form of the leftmost derivation given the parse tree
+	def static void leftmostDerivation(ParseNode root) {
 		var steps = 1
 	    val derivations = new ArrayList<String>()
 	    val sententialForm = new ArrayList<String>()
