@@ -9,7 +9,7 @@ Program 2. A meta-language pseudo-compiler written in Xtend.
 Setting up Eclipse IDE with Xtend and getting the project up and running is more cumbersome, but the general steps are outlined below:
 
 1. Install Eclipse IDE and install the Xtend plugin.
-2. Clone this repository and open it as an Eclipse project.
+2. Clone this repository and open it as a general project.
 3. Add the `Java` and `Xtend` natures to the project.
 4. Set up a run configuration to execute `src/main/App.xtend` as a Java application.
 
