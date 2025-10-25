@@ -55,6 +55,12 @@ class Parser {
 		val haltCount = tokens.filter[t | t.type == TokenType.HALT].size
 		if (haltCount > 1)
 		    throw error(tokens.get(haltIndex), "Multiple HALT found (only one allowed at the end)", PARSE_PROGRAM)
+		
+		// HALT last token check
+		if (haltIndex != tokens.size - 1) {
+			val afterHalt = tokens.subList(haltIndex + 1, tokens.size)
+		    throw error(afterHalt, "Extra input found after HALT", PARSE_PROGRAM)
+		}
 		    
 	    if (haltIndex <= execIndex + 1) // no statements check
 	        throw error("The program input contains no statements between EXEC and HALT", PARSE_PROGRAM)
@@ -138,12 +144,12 @@ class Parser {
 	/// parseKey expands the nonterminal <key>
 	/// <key> → key <k>
     private def ParseNode parseKey(List<Token> tokenList) {
-    	if (tokenList.size < 2) // check for too little tokens
-    		throw error(tokenList, "Insufficient input for assignment (syntax: key <k>)", PARSE_KEY)
-    	if (tokenList.size > 2)  // check for extraneous tokens
-	        throw error(tokenList, "Extraneous input found (syntax: key <k>)", PARSE_KEY)
-	    if (tokenList.get(0).type != TokenType.KEY) // check that first token is key
+    	if (tokenList.get(0).type != TokenType.KEY) // check that first token is key
 	        throw error(tokenList.get(0), "Expected keyword 'key'", PARSE_KEY)
+    	if (tokenList.size < 2) // check for too little tokens
+    		throw error(tokenList, "No key value was given", PARSE_KEY)
+    	if (tokenList.size > 2)  // check for extraneous tokens
+	        throw error(tokenList, "Too many key values given", PARSE_KEY)
 	    
 	    val node = new ParseNode("<key>") // begin <key> node
 	    node.addChild(new ParseNode(tokenList.get(0).lexeme)) // add key node
