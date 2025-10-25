@@ -5,17 +5,21 @@ import java.util.List
 class ParseNode {
     val String label
     val List<ParseNode> children = newArrayList
-
+    
+    def getLabel(){
+    	return label
+    }
+    
+	def List<ParseNode> getChildren() {
+        children
+    }
+	
     new(String label) {
         this.label = label
     }
 
     def addChild(ParseNode child) {
         children.add(child)
-    }
-
-    def List<ParseNode> getChildren() {
-        children
     }
 
     // Concrete method, not abstract

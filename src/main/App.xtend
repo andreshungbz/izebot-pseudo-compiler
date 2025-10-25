@@ -8,6 +8,8 @@ import java.util.Scanner
 
 class App {
 	def static void main(String[] args) {
+		System.setProperty("file.encoding", "UTF-8");
+		
 		Print.introduction()
 		
 		val scanner = new Scanner(System.in)
