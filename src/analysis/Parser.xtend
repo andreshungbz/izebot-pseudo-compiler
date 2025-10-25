@@ -1,240 +1,192 @@
+/// Parse.xtend contains the subprogram for syntax analysis.
+/// It creates the parse tree from which the derivations and tree are printed.
 package analysis
 
 import analysis.Token
 import java.util.List
 
+import static analysis.ParseErrors.*
+
 class Parser {
     // DATA MEMBERS
-    
     val List<Token> tokens
-    val List<String> derivations = newArrayList
-    var String sententialForm
     var ParseNode rootNode
 
     // CONSTRUCTOR
-    
     new(List<Token> tokens) {
         this.tokens = tokens
     }
     
     // PUBLIC METHODS
 
-    // --- Public Entry Point ---
+    /// parse() performs a LL parsing for a leftmost derivation. It throws the first error encountered.
+    /// It returns the complete parse tree on successful parsing.
     def ParseNode parse() {
         try {
             rootNode = parseProgram()
             return rootNode
-        } catch (ParseError e) {
+        } catch (ParseErrors.ParseError e) {
         	val RED = "\u001B[31m"
     		val RESET = "\u001B[0m"
-            println(RED + "Parse error: " + e.message + RESET + '\n')
+            println(RED + e.message + RESET)
             return null
         }
     }
     
-    def List<String> getDerivations() {
-        derivations
-    }
-
 	// PRIVATE METHODS
 
-    // --- Grammar Methods ---
+    // GRAMMAR PARSING METHODS
 
+	/// parseProgram() begins parsing of the start terminal <program>
+	/// <program> → EXEC <statement> HALT
     private def ParseNode parseProgram() {
-    	val execIndex = indexOf(tokens, TokenType.EXEC)
-    	val haltIndex = indexOf(tokens, TokenType.HALT)
+    	val execIndex = tokenLookup(tokens, TokenType.EXEC)
+    	val haltIndex = tokenLookup(tokens, TokenType.HALT)
     	
 	    if (execIndex == -1) // EXEC check
-	        throw new ParseError("[Error] Program must start with EXEC")
+	        throw error("The program input must start with EXEC", PARSE_PROGRAM)
 	    if (haltIndex == -1) // HALT check
-	        throw new ParseError("[Error] Program must end with HALT")
+	        throw error("The program input must end with HALT", PARSE_PROGRAM)
+	        
+	    // multiple HALT check
+		val haltCount = tokens.filter[t | t.type == TokenType.HALT].size
+		if (haltCount > 1)
+		    throw error(tokens.get(haltIndex), "Multiple HALT found (only one allowed at the end)", PARSE_PROGRAM)
+		    
 	    if (haltIndex <= execIndex + 1) // no statements check
-	        throw new ParseError("[Error] Program has no statements between EXEC and HALT")
+	        throw error("The program input contains no statements between EXEC and HALT", PARSE_PROGRAM)
 	
-	    // initialize sentential form
-	    sententialForm = "EXEC <statement> HALT"
-	
-	    val node = new ParseNode("<program>") // root node
+	    val node = new ParseNode("<program>") // begin <program> node
+	    node.addChild(new ParseNode(tokens.get(execIndex).lexeme)) // add EXEC node
 	    
-	    node.addChild(new ParseNode(tokens.get(execIndex).lexeme))
-	    // Pass sublist starting from current
+	    // create sublist and pass down to parseStatement
 	    val statementTokens = tokens.subList(execIndex + 1, haltIndex)
-    	node.addChild(parseStatement(statementTokens))
-	    node.addChild(new ParseNode(tokens.get(haltIndex).lexeme))
+    	node.addChild(parseStatement(statementTokens)) // add <statement> nodes
+    	
+	    node.addChild(new ParseNode(tokens.get(haltIndex).lexeme)) // add HALT node
 	    
 	    return node
 	}
 
+	/// parseStatement expands the nonterminal <statement>
+	/// <statement>  → <assignment> > | <assignment> > <statement>
     private def ParseNode parseStatement(List<Token> tokenList) {
-	    if (tokenList.isEmpty) 
-	        throw new ParseError("[Error] There are no statements!")
+    	val gtIndex = tokenLookup(tokenList, TokenType.GREATER) // get index of >
+    	
+	    if (gtIndex == -1) // check that > exists
+	        throw error(tokenList, "Expected a '>' symbol after assignment", PARSE_STATEMENT)
+	    if (tokenList.length == 1 || gtIndex == 0) // check if > is the only token or if there are no tokens before >
+	    	throw error(tokenList.get(0), "There is no assignment for '>'", PARSE_STATEMENT)
+	    
+	    val node = new ParseNode("<statement>") // begin <statement> node
 	
-	    val node = new ParseNode("<statement>")
-	
-	    // Step 1: find '>'
-	    val gtIndex = indexOf(tokenList, TokenType.GREATER)
-	    if (gtIndex == -1) 
-	        throw error(tokenList.get(0), "Expected '>' after assignment")
-	        
-	    // Step 2: Decide if this is a single statement or has more
+		/// isSingleStatement determines if there are other tokens after >
     	val isSingleStatement = (gtIndex == tokenList.size - 1)
 	
-	    // Step 3: Record derivation
-	    if (isSingleStatement) 
-	        record("<statement>", "<assignment> >")
-	    else
-	        record("<statement>", "<assignment> > <statement>")
-	
-	    // Step 4: Parse the assignment (everything before '>')
+	    // parse the <assignment> before >
 	    val assignmentTokens = tokenList.subList(0, gtIndex)
-	    node.addChild(parseAssignment(assignmentTokens))
+	    node.addChild(parseAssignment(assignmentTokens)) // add <assignment> nodes
 	
-	    // Step 5: Add the '>' token itself
-	    node.addChild(new ParseNode(tokenList.get(gtIndex).lexeme))
+	    node.addChild(new ParseNode(tokenList.get(gtIndex).lexeme)) // add > node
 	
-	    // Step 6: Parse remaining statement if not single
-	    if (!isSingleStatement) {
+	    if (!isSingleStatement) { // parse the <statement> after >
 	        val remainingTokens = tokenList.subList(gtIndex + 1, tokenList.size)
-	        node.addChild(parseStatement(remainingTokens))
+	        node.addChild(parseStatement(remainingTokens)) // add <statement> nodes
 	    }
 	
 	    return node
 	}
 
+	/// parseAssignemnt expands the nonterminal <assignment>
+	/// <assignment> → <key> = <m>
     private def ParseNode parseAssignment(List<Token> tokenList) {
-	    if (tokenList.isEmpty)
-	        throw new ParseError("[Error] Assignment is empty!")
+    	val eqIndex = tokenLookup(tokenList, TokenType.EQUAL) // get index of =
+    	
+    	if (eqIndex == -1) // check that = exists
+	        throw error(tokenList, "Expected '=' in assignment", PARSE_ASSIGNMENT)
+	    if (eqIndex == 0 && tokenList.length == 1) // check for single =
+	    	throw error(tokenList.get(eqIndex), "Missing key and movement for '='", PARSE_ASSIGNMENT)
+	    if (eqIndex == 0) // check for no tokens before =
+	    	throw error(tokenList.get(eqIndex), "Missing key before '='", PARSE_ASSIGNMENT)
+	    if (eqIndex == tokenList.length - 1) // check for no tokens after =
+	    	throw error(tokenList.get(eqIndex), "Missing movement after '='", PARSE_ASSIGNMENT)
+	    // check for multiple =
+	    val eqCount = tokenList.filter[t | t.type == TokenType.EQUAL].size
+		if (eqCount > 1)
+		    throw error(tokenList, "Multiple '=' found in assignment", PARSE_ASSIGNMENT)
+	    
+	    val node = new ParseNode("<assignment>") // begin <assignment> node
 	
-	    val node = new ParseNode("<assignment>")
-	
-	    // Step 1: Record the derivation
-	    record("<assignment>", "<key> = <m>")
-	
-	    // Step 2: Parse the key (everything before '=')
-	    val eqIndex = indexOf(tokenList, TokenType.EQUAL)
-	    if (eqIndex == -1) 
-	        throw error(tokenList.get(0), "Expected '=' in assignment")
-	
-	    // Step 2.1: Validate key tokens
+	    // parse <key> before =
 	    val keyTokens = tokenList.subList(0, eqIndex)
-	    if (keyTokens.size != 2)  // 'key' + one key value
-	        throw new ParseError("[Error] Key assignment must be 'key <value>', found extra tokens!")
-	    node.addChild(parseKey(keyTokens))
+	    node.addChild(parseKey(keyTokens)) // add <key> nodes
 	
-	    // Step 3: Add the '=' token itself
-	    node.addChild(new ParseNode(tokenList.get(eqIndex).lexeme))
+	    node.addChild(new ParseNode(tokenList.get(eqIndex).lexeme)) // add = node
 	
-	    // Step 4: Parse the movement (everything after '=')
-	    val movementTokens = tokenList.subList(eqIndex + 1, tokenList.size)
-	    if (movementTokens.isEmpty)
-	        throw new ParseError("[Error] Assignment missing movement after '='")
-	    if (movementTokens.size != 1)
-        	throw new ParseError("[Error] Assignment must have exactly one movement token!")
-	
-	    node.addChild(parseM(movementTokens))
+	    // parse <m> after =
+	    val movementToken = tokenList.subList(eqIndex + 1, tokenList.size)
+	    if (movementToken.size > 1) // check for too many tokens
+    		throw error(movementToken, "There should be only 1 movement", PARSE_ASSIGNMENT)
+	    node.addChild(parseM(movementToken)) // add <m> node
 	
 	    return node
 	}
 
+	/// parseKey expands the nonterminal <key>
+	/// <key> → key <k>
     private def ParseNode parseKey(List<Token> tokenList) {
-	    if (tokenList.isEmpty)
-	        throw new ParseError("[Error] Key is missing!")
+    	if (tokenList.size < 2) // check for too little tokens
+    		throw error(tokenList, "Insufficient input for assignment (syntax: key <k>)", PARSE_KEY)
+    	if (tokenList.size > 2)  // check for extraneous tokens
+	        throw error(tokenList, "Extraneous input found (syntax: key <k>)", PARSE_KEY)
+	    if (tokenList.get(0).type != TokenType.KEY) // check that first token is key
+	        throw error(tokenList.get(0), "Expected keyword 'key'", PARSE_KEY)
+	    
+	    val node = new ParseNode("<key>") // begin <key> node
+	    node.addChild(new ParseNode(tokenList.get(0).lexeme)) // add key node
 	
-	    val node = new ParseNode("<key>")
-	
-	    // Step 1: Record derivation
-	    record("<key>", "key <k>")
-	
-	    // Step 2: Expect first token to be 'key'
-	    if (tokenList.get(0).type != TokenType.KEY)
-	        throw error(tokenList.get(0), "Expected 'key' keyword")
-	
-	    node.addChild(new ParseNode(tokenList.get(0).lexeme))
-	
-	    // Step 3: Remaining tokens go to parseK
-	    val kTokens = tokenList.subList(1, tokenList.size)
-	    if (kTokens.isEmpty)
-	        throw new ParseError("[Error] Key missing key value (A, B, C, D)")
-	
-	    node.addChild(parseK(kTokens))
+	    // parse <k>
+	    val kToken = tokenList.subList(1, tokenList.size)
+	    node.addChild(parseK(kToken)) // add <k> node
 	
 	    return node
 	}
 
-
+	/// parseM expands the nonterminal <m>
+	/// <m> → DRVF | DRVB | TRNL | TRNR | SPNL | SPNR
 	private def ParseNode parseM(List<Token> tokenList) {
-	    if (tokenList.isEmpty)
-	        throw new ParseError("[Error] Expected a movement token, but none found!")
-	        
-	    if (tokenList.size > 1)
-    		throw new ParseError("[Error] Unexpected extra values after key")
+		val m = tokenList.get(0) // get movement value
+		
+		if (m.type != TokenType.MOVEMENT) // check invalid movement value
+	        throw error(m, "Invalid movement value. Should be one of {DRVF, DRVB, TRNL, TRNR, SPNL, SPNR}", PARSE_M)
 	
-	    val node = new ParseNode("<m>")
-	
-	    val tok = tokenList.get(0)
-	    if (tok.type != TokenType.MOVEMENT)
-	        throw error(tok, "Not a valid movement (DRVF, DRVB, TRNL, TRNR, SPNL, SPNR)")
-	
-	    // Record the actual movement token as the derivation
-	    record("<m>", tok.lexeme)
-	
-	    // Add the movement token as a child node
-	    node.addChild(new ParseNode(tok.lexeme))
+	    val node = new ParseNode("<m>") // begin <m> node
+	    node.addChild(new ParseNode(m.lexeme)) // add <m> value node
 	
 	    return node
 	}
 	
+	/// parseK expands the nonterminal <k>
+	/// <k> → A | B | C | D
 	private def ParseNode parseK(List<Token> tokenList) {
-	    if (tokenList.isEmpty)
-	        throw new ParseError("[Error] Expected a key token, but none found!")
+		val k = tokenList.get(0) // get key value
+		
+		if (k.type != TokenType.KEYVALUE) // check invalid key value
+	        throw error(k, "Invalid key value. Should be one of {A, B, C, D}", PARSE_K)
 	        
-	    if (tokenList.size > 1)
-    		throw new ParseError("[Error] Unexpected extra movement values")
-	        
-	
-	    val node = new ParseNode("<k>")
-	
-	    val tok = tokenList.get(0)
-	    if (tok.type != TokenType.KEYVALUE)
-	        throw error(tok, "Not a valid key value (A, B, C, D)")
-	
-	    // Record the actual key value as the derivation
-	    record("<k>", tok.lexeme)
-	
-	    // Add the key token as a child node
-	    node.addChild(new ParseNode(tok.lexeme))
+	    val node = new ParseNode("<k>") // begin <k> node
+	    node.addChild(new ParseNode(k.lexeme)) // add <k> value node
 	
 	    return node
 	}
-	
-    // --- Derivation Tracking ---
-    
-    private def record(String nonterminal, String expansion) {
-	    sententialForm = sententialForm.replaceFirst(nonterminal, expansion)
-	    derivations.add(sententialForm)
-	}
 
-    // --- Error Handling ---
+	// HELPER METHODS
     
-    private def ParseError error(Token token, String message) {
-        new ParseError(
-            "[Error] " + message + " (found " + token.lexeme + " at index " + token.position + ")"
-        )
-    }
-
-    static class ParseError extends RuntimeException {
-        new(String msg) {
-            super(msg)
-        }
-    }
-    
-    // OTHER
-    
-    private def int indexOf(List<Token> tokenList, TokenType type) {
+    /// tokenLookup returns the index of a token type in a list of Token, or -1 if not found
+    private def int tokenLookup(List<Token> tokenList, TokenType type) {
 	    for (i : 0 ..< tokenList.size) {
 	        if (tokenList.get(i).type == type) return i
 	    }
-	    return -1 // not found
+	    return -1
 	}
-    
 }
