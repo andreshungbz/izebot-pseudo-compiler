@@ -29,14 +29,20 @@ class App {
 				val parser = new Parser(tokens)
 				val parsedTokens = parser.parse()
 				
+				// successful derivation
 				if (parsedTokens !== null){
+					// print derivations
+					println("[Derivation Success] Press ENTER to view derivations...")
+					scanner.nextLine()	
 					Print.printGrammarDerivations(parsedTokens)
-					println("Press ENTER to continue...")
+					
+					// print parse tree
+					println("Press ENTER to view parse tree...")
 					scanner.nextLine()				
 					Print.printParseTree(parsedTokens)
 				}
 				
-				println("Press ENTER to continue...")
+				println("Press ENTER to submit another input program...")
 				scanner.nextLine()
 				
 			}
