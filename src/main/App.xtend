@@ -36,12 +36,12 @@ class App {
 					// print derivations
 					println("[Derivation Success] Press ENTER to view derivations...")
 					scanner.nextLine()	
-					Print.printGrammarDerivations(parsedTokens)
+					Print.grammarDerivations(parsedTokens)
 					
 					// print parse tree
 					println("Press ENTER to view parse tree...")
 					scanner.nextLine()				
-					Print.printParseTree(parsedTokens)
+					Print.parseTree(parsedTokens)
 				}
 				
 				println("Press ENTER to submit another input program...")

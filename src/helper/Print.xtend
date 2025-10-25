@@ -50,7 +50,7 @@ class Print {
    		}
     }
     
-	def static void printGrammarDerivations(ParseNode root) {
+	def static void grammarDerivations(ParseNode root) {
 	
 	var steps = 1
     val derivations = new ArrayList<String>()
@@ -73,11 +73,13 @@ class Print {
 	    steps++
 	   }
 	
-	// All subsequent derivation steps with 10-space indent
-	for (i : 1 ..< derivations.size){
-	    println(steps + ".           -> " + derivations.get(i))
-	    steps++
-	    }
+	for (i : 1 ..< derivations.size) {
+    	// Adjust indentation: 10 spaces if step < 10, 9 spaces if step >= 10
+    val indent = if (steps < 10) "          " else "         "
+    println(steps + ". " + indent + "-> " + derivations.get(i))
+    steps++
+	}
+
 	
 	println("========================")
 
@@ -86,7 +88,7 @@ class Print {
 	 /**
      * Print a parse tree in the terminal with vertical ASCII branches
      */
-	def static void printParseTree(ParseNode root) {
+	def static void parseTree(ParseNode root) {
 	    println() // extra space
 	
 	    val rows = PrintHelper.calculateMatrixHeight(root)
