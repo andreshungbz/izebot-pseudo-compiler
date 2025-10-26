@@ -79,18 +79,29 @@ class Parser {
 
 	/// parseStatement expands the nonterminal <statement>
 	/// <statement>  → <assignment> > | <assignment> > <statement>
-    private def ParseNode parseStatement(List<Token> tokenList) {
-    	val gtIndex = tokenLookup(tokenList, TokenType.GREATER) // get index of >
-    	
-	    if (gtIndex == -1) // check that > exists
-	        throw error(tokenList, "Expected a '>' symbol after assignment", PARSE_STATEMENT)
-	    if (tokenList.length == 1 || gtIndex == 0) // check if > is the only token or if there are no tokens before >
-	    	throw error(tokenList.get(0), "There is no assignment for '>'", PARSE_STATEMENT)
-	    
+	private def ParseNode parseStatement(List<Token> tokenList) {
 	    val node = new ParseNode("<statement>") // begin <statement> node
 	
-		/// isSingleStatement determines if there are other tokens after >
-    	val isSingleStatement = (gtIndex == tokenList.size - 1)
+	    // --- CHECK 1: ensure the statement starts with a valid assignment ---
+	if (tokenList.get(0).type != TokenType.KEY) {
+	    val offendingToken = tokenList.get(0)
+	    throw error(offendingToken,
+	        "Expected an assignment after 'EXEC', got '" + offendingToken.lexeme + "'",
+	        PARSE_STATEMENT)
+	}
+	
+	    val gtIndex = tokenLookup(tokenList, TokenType.GREATER) // get index of >
+	
+	    // --- CHECK 2: ensure a '>' exists after the assignment ---
+	    if (gtIndex == -1)
+	        throw error(tokenList, "Expected a '>' symbol after assignment", PARSE_STATEMENT)
+	
+	    // check if > is the only token or if there are no tokens before >
+	    if (tokenList.length == 1 || gtIndex == 0)
+	        throw error(tokenList.get(0), "There is no assignment for '>'", PARSE_STATEMENT)
+	
+	    /// isSingleStatement determines if there are other tokens after >
+	    val isSingleStatement = (gtIndex == tokenList.size - 1)
 	
 	    // parse the <assignment> before >
 	    val assignmentTokens = tokenList.subList(0, gtIndex)
@@ -99,7 +110,18 @@ class Parser {
 	    node.addChild(new ParseNode(tokenList.get(gtIndex).lexeme)) // add > node
 	
 	    if (!isSingleStatement) { // parse the <statement> after >
+	
 	        val remainingTokens = tokenList.subList(gtIndex + 1, tokenList.size)
+	        val nextToken = remainingTokens.get(0)
+	
+	        // --- CHECK 3: handle invalid tokens after '>'
+	        if (nextToken.type != TokenType.KEY) {
+	            throw error(nextToken,
+	                "Unexpected token after '>' — expected start of a statement",
+	                PARSE_STATEMENT)
+	        }
+	
+	        // If the token is valid, recursively parse the remaining statement
 	        node.addChild(parseStatement(remainingTokens)) // add <statement> nodes
 	    }
 	
@@ -144,8 +166,10 @@ class Parser {
 	/// parseKey expands the nonterminal <key>
 	/// <key> → key <k>
     private def ParseNode parseKey(List<Token> tokenList) {
-    	if (tokenList.get(0).type != TokenType.KEY) // check that first token is key
-	        throw error(tokenList.get(0), "Expected keyword 'key'", PARSE_KEY)
+	    if (tokenList.get(0).type != TokenType.KEY) { // check that first token is key
+	        val wrongKey = tokenList.get(0).lexeme
+	        throw error(tokenList.get(0), "Expected keyword 'key', got '" + wrongKey + "'", PARSE_KEY)
+	    }
     	if (tokenList.size < 2) // check for too little tokens
     		throw error(tokenList, "No key value was given", PARSE_KEY)
     	if (tokenList.size > 2)  // check for extraneous tokens

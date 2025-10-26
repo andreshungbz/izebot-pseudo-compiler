@@ -11,12 +11,12 @@ import java.util.ArrayList
 class Print {
 	/// BNF grammar
 	static val grammar = # [
-        "<program>", "→", "EXEC <statement> HALT",
-        "<statement>", "→", "<assignment> > | <assignment> > <statement>",
-        "<assignment>", "→", "<key> = <m>",
-        "<key>", "→", "key <k>",
-        "<m>", "→", "DRVF | DRVB | TRNL | TRNR | SPNL | SPNR",
-        "<k>", "→", "A | B | C | D"
+        "<program>", "->", "EXEC <statement> HALT",
+        "<statement>", "->", "<assignment> > | <assignment> > <statement>",
+        "<assignment>", "->", "<key> = <m>",
+        "<key>", "->", "key <k>",
+        "<m>", "->", "DRVF | DRVB | TRNL | TRNR | SPNL | SPNR",
+        "<k>", "->", "A | B | C | D"
     ]
 	
 	/// introduction displays program information
@@ -83,13 +83,13 @@ class Print {
 		println("[LEFTMOST DERIVATION]")
 		
 		if (!derivations.empty){ // first derivation <program> →
-		    println(steps++ + ". <program> → " + derivations.get(0))
+		    println(steps++ + ". <program> -> " + derivations.get(0))
 		}
 		
 		for (i : 1 ..< derivations.size) {
 			// adjust indentation: 10 spaces if step < 10, 9 spaces if step >= 10
 		    val indent = if (steps < 10) "          " else "         "
-		    println(steps++ + ". " + indent + "→ " + derivations.get(i))
+		    println(steps++ + ". " + indent + " " + derivations.get(i))
 		}
 	}
 	
