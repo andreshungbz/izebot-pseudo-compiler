@@ -89,7 +89,7 @@ class Print {
 		for (i : 1 ..< derivations.size) {
 			// adjust indentation: 10 spaces if step < 10, 9 spaces if step >= 10
 		    val indent = if (steps < 10) "          " else "         "
-		    println(steps++ + ". " + indent + " " + derivations.get(i))
+		    println(steps++ + ". " + indent + "-> " + derivations.get(i))
 		}
 	}
 	
