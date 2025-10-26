@@ -83,12 +83,12 @@ class Parser {
 	    val node = new ParseNode("<statement>") // begin <statement> node
 	
 	    // --- CHECK 1: ensure the statement starts with a valid assignment ---
-	if (tokenList.get(0).type != TokenType.KEY) {
-	    val offendingToken = tokenList.get(0)
-	    throw error(offendingToken,
-	        "Expected an assignment after 'EXEC', got '" + offendingToken.lexeme + "'",
-	        PARSE_STATEMENT)
-	}
+		if (tokenList.get(0).type != TokenType.KEY) {
+		    val offendingToken = tokenList.get(0)
+		    throw error(offendingToken,
+		        "Expected an assignment after 'EXEC', got '" + offendingToken.lexeme + "'",
+		        PARSE_STATEMENT)
+		}
 	
 	    val gtIndex = tokenLookup(tokenList, TokenType.GREATER) // get index of >
 	
@@ -110,7 +110,6 @@ class Parser {
 	    node.addChild(new ParseNode(tokenList.get(gtIndex).lexeme)) // add > node
 	
 	    if (!isSingleStatement) { // parse the <statement> after >
-	
 	        val remainingTokens = tokenList.subList(gtIndex + 1, tokenList.size)
 	        val nextToken = remainingTokens.get(0)
 	
