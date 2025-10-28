@@ -4,9 +4,9 @@ package main
 
 import analysis.Lexer
 import analysis.Parser
+import generator.IntermediateCode
 import helper.Print
 import java.util.Scanner
-import generator.IntermediateCode
 
 class App {
 	def static void main(String[] args) {
@@ -50,9 +50,9 @@ class App {
 					scanner.nextLine()				
 					Print.parseTree(parseTree)
 					
-					println(BLUE +"\n Press ENTER to Generate program code"+ RESET)
+					// print PBASIC intermediate program and write to IZEBOT.BSP
+					println(BLUE +"\n[Press ENTER to view generated PBASIC CODE and write to IZEBOT.BSP]"+ RESET)
 					scanner.nextLine()
-					// TODO: print PBASIC intermediate program and write to IZEBOT.BSP
 					IntermediateCode.printer(parseTree)
 				}
 				
