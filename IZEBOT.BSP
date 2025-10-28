@@ -8,8 +8,8 @@ Main:     DO
  
 SERIN 3,2063,250,Timeout,[KEY] 
 If Key = B Then GOSUB Forward
-If Key = A Then GOSUB Backward
-If Key = C Then GOSUB SpinRight
+If Key = C Then GOSUB TurnLeft
+If Key = D Then GOSUB SpinRight
 
 	LOOP
  
@@ -18,9 +18,9 @@ If Key = C Then GOSUB SpinRight
     	   GOTO Main
   
  '+++++ Movement Procedure ++++++++++++++++++++++++++++++
-HIGH  13 : LOW 12 : HIGH 15 : LOW 14 : RETURN
-HIGH  12 : LOW 13 : HIGH 14 : LOW 15 : RETURN
-HIGH 12 : LOW 13 : HIGH 15 : LOW 14 : RETURN
+Forward: HIGH  13 : LOW 12 : HIGH 15 : LOW 14 : RETURN
+TurnLeft: HIGH  13 : LOW 12 : LOW 15  : LOW 14 : RETURN
+SpinRight: HIGH 12 : LOW 13 : HIGH 15 : LOW 14 : RETURN
 Motor_OFF: LOW   13 : LOW 12 : LOW  15 : LOW 14 : RETURN 
 
  '+++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
