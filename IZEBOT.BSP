@@ -1,0 +1,26 @@
+'{$STAMP BS2p} 
+
+'{$PBASIC 2.5} 
+
+KEY     VAR     Byte 
+ 
+Main:     DO
+ 
+SERIN 3,2063,250,Timeout,[KEY] 
+If Key = B Then GOSUB Forward
+If Key = A Then GOSUB Backward
+If Key = C Then GOSUB SpinRight
+
+	LOOP
+ 
+ Timeout:  GOSUB Motor_OFF
+ 
+    	   GOTO Main
+  
+ '+++++ Movement Procedure ++++++++++++++++++++++++++++++
+HIGH  13 : LOW 12 : HIGH 15 : LOW 14 : RETURN
+HIGH  12 : LOW 13 : HIGH 14 : LOW 15 : RETURN
+HIGH 12 : LOW 13 : HIGH 15 : LOW 14 : RETURN
+Motor_OFF: LOW   13 : LOW 12 : LOW  15 : LOW 14 : RETURN 
+
+ '+++++++++++++++++++++++++++++++++++++++++++++++++++++++ 

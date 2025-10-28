@@ -6,6 +6,7 @@ import analysis.Lexer
 import analysis.Parser
 import helper.Print
 import java.util.Scanner
+import generator.IntermediateCode
 
 class App {
 	def static void main(String[] args) {
@@ -20,6 +21,7 @@ class App {
 		
 		while (running) { // main program loop
 			Print.bnf()
+			
 			
 			print(BLUE + "\nEnter Input (QUIT to exit): " + RESET)
 			val input = scanner.nextLine().trim // get input and remove whitespace
@@ -48,7 +50,10 @@ class App {
 					scanner.nextLine()				
 					Print.parseTree(parseTree)
 					
+					println(BLUE +"\n Press ENTER to Generate program code"+ RESET)
+					scanner.nextLine()
 					// TODO: print PBASIC intermediate program and write to IZEBOT.BSP
+					IntermediateCode.printer(parseTree)
 				}
 				
 				print(BLUE + "[Press ENTER to submit another input]" + RESET)
