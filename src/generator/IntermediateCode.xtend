@@ -85,7 +85,8 @@ class IntermediateCode {
 	def static String printbody(String [] keys, String [] move){
 		var StringBuilder builder = new StringBuilder
 		for (i: 0..keys.size-1) {
-			builder.append("IF KEY = " + keys.get(i)+" THEN GOSUB "+ move.get(i) + "\n")
+			builder.append('''IF KEY = "«keys.get(i)»" OR KEY = "«keys.get(i).toLowerCase»" THEN GOSUB «move.get(i)»
+			''')
 		}
 		
 		return builder.toString
