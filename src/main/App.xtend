@@ -50,7 +50,7 @@ class App {
 					Print.parseTree(parseTree)
 					
 					// print PBASIC intermediate program and write to IZEBOT.BSP
-					println(BLUE +"\n[Press ENTER to view generated PBASIC CODE and write to IZEBOT.BSP]"+ RESET)
+					println(BLUE +"[Press ENTER to view generated PBASIC CODE and write to IZEBOT.BSP]"+ RESET)
 					scanner.nextLine()
 					IntermediateCode.printer(parseTree)
 				}
