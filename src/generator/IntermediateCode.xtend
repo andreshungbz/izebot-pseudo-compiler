@@ -143,12 +143,12 @@ class IntermediateCode {
         val builder = new StringBuilder
         for (move : mapping.values.toSet) {
             switch move {
-                case "Forward": builder.append("Forward: HIGH  13 : LOW 12 : HIGH 15 : LOW 14 : RETURN\n")
-                case "Backward": builder.append("Backward: HIGH  12 : LOW 13 : HIGH 14 : LOW 15 : RETURN\n")
-                case "TurnLeft": builder.append("TurnLeft: HIGH  13 : LOW 12 : LOW 15  : LOW 14 : RETURN\n")
-                case "TurnRight": builder.append("TurnRight: LOW  13 : LOW 12 : HIGH 15 : LOW 14 : RETURN\n")
-                case "SpinLeft": builder.append("SpinLeft: HIGH  13 : LOW 12 : HIGH 14 : LOW 15 : RETURN\n")
-                case "SpinRight": builder.append("SpinRight: HIGH 12 : LOW 13 : HIGH 15 : LOW 14 : RETURN\n")
+                case "Forward": builder.append  ("Forward:   HIGH  13 : LOW 12 : HIGH 15 : LOW 14 : RETURN\n")
+                case "Backward": builder.append ("Backward:  HIGH  12 : LOW 13 : HIGH 14 : LOW 15 : RETURN\n")
+                case "TurnLeft": builder.append ("TurnLeft:  HIGH  13 : LOW 12 : LOW 15  : LOW 14 : RETURN\n")
+                case "TurnRight": builder.append("TurnRight: LOW   13 : LOW 12 : HIGH 15 : LOW 14 : RETURN\n")
+                case "SpinLeft": builder.append ("SpinLeft:  HIGH  13 : LOW 12 : HIGH 14 : LOW 15 : RETURN\n")
+                case "SpinRight": builder.append("SpinRight: HIGH  12 : LOW 13 : HIGH 15 : LOW 14 : RETURN\n")
             }
         }
         
