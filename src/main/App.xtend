@@ -22,7 +22,6 @@ class App {
 		while (running) { // main program loop
 			Print.bnf()
 			
-			
 			print(BLUE + "\nEnter Input (QUIT to exit): " + RESET)
 			val input = scanner.nextLine().trim // get input and remove whitespace
 			println()
