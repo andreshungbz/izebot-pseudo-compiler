@@ -40,30 +40,6 @@ class Print {
             println(left + " " + arrow + " " + right)
         }
 	}
-	
-	/// tokens pretty prints a list of tokens in a formatted table (used for debugging)
-    def static void tokens(List<Token> tokens) {
-    	val RED = "\u001B[31m"
-    	val RESET = "\u001B[0m"
-    	
-        // header
-        println(String.format("%-12s | %-12s | %-8s", "[TOKEN]", "[LEXEME]", "[POSITION]"))
-        println("---------------------------------------------------------")
-        
-        for (token : tokens) {
-	        val line = String.format("%-12s | %-12s | %-8d",
-	            token.type.toString,
-	            token.lexeme,
-	            token.position)
-	
-	        // color INVALID tokens
-	        if (token.type == components.TokenType.INVALID) {
-	            println(RED + line + RESET)
-	        } else {
-	            println(line)
-	        }
-   		}
-    }
     
     /// leftmostDerivation displays each sentential form of the leftmost derivation given the parse tree
 	def static void leftmostDerivation(ParseNode root) {
