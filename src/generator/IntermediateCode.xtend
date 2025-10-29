@@ -9,16 +9,16 @@ class IntermediateCode {
 	static val header= '''
 	'{$STAMP BS2p}
 	'{$PBASIC 2.5}
-	KEY     	VAR     Byte
-	Main:     	DO
-				  SERIN 3,2063,250,Timeout,[KEY]
+	KEY         VAR    Byte
+	Main:       DO
+	              SERIN 3,2063,250,Timeout,[KEY]
 				
 	'''
 	
 	static val footer1= '''
-		    	LOOP
+	            LOOP
 	Timeout:    GOSUB Motor_OFF
-		    	GOTO Main
+	            GOTO Main
 				
 	'+++++ Movement Procedure ++++++++++++++++++++++++++++++
 	'''
@@ -85,7 +85,7 @@ class IntermediateCode {
 	def static String printbody(String [] keys, String [] move){
 		var StringBuilder builder = new StringBuilder
 		for (i: 0..keys.size-1) {
-			builder.append('''IF KEY = "«keys.get(i)»" OR KEY = "«keys.get(i).toLowerCase»" THEN GOSUB «move.get(i)»
+			builder.append('''              IF KEY = "«keys.get(i)»" OR KEY = "«keys.get(i).toLowerCase»" THEN GOSUB «move.get(i)»
 			''')
 		}
 		
